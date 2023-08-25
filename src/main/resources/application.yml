@@ -1,0 +1,61 @@
+#database:
+  #  params: useSSL=false&allowPublicKeyRetrieval=true&profileSQL=true&logger=Slf4JLogger
+  #  params: useUnicode=true&characterEncoding=utf8&useSSL=false&profileSQL=true&logger=Slf4JLogger
+
+spring:
+  messages:
+    basename: messages/error/message
+  mvc:
+    throw-exception-if-no-handler-found: true
+#  datasource:
+#    driver-class-name: org.h2.Driver
+#    #    driver-class-name: com.mysql.cj.jdbc.Driver
+#    hikari:
+#      jdbc-url: jdbc:h2:~/test
+#      username: sa
+#      password:
+#      data-source-properties:
+#        cachePrepStmts: true
+#        prepStmtCacheSize: 250
+#        prepStmtCacheSqlLimit: 2048
+#        useServerPrepStmts: true
+#        useLocalSessionState: true
+#        rewriteBatchedStatements: true
+#        cacheResultSetMetadata: true
+#        cacheServerConfiguration: true
+#        elideSetAutoCommits: true
+#        maintainTimeStats: false
+  jpa:
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        dialect: org.hibernate.dialect.H2Dialect
+  #        dialect: org.hibernate.dialect.MySQLDialect
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+springdoc:
+  context-root: docs
+  model-and-view-allowed: true
+  api-docs:
+    path: /${springdoc.context-root}/api-docs.json
+    groups:
+      enabled: true
+  swagger-ui:
+    path: /${springdoc.context-root}/index.do
+    operations-sorter: method
+    disable-swagger-default-url: true
+    display-request-duration: true
+    doc-expansion: none
+    tags-sorter: alpha
+
+logging:
+  config: classpath:log4j2.xml
