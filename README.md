@@ -1,1 +1,12 @@
-# lecture_reservation
+- 개발언어
+  - Java 17
+- 사용한 프레임워크
+  - Spring Boot 3.0
+  - mapstruct
+  - Thymeleaf
+  - JPA
+- 사용한 RDBMS
+  - Mysql
+- 데이타 설계
+  
+- 그 밖에 고민하셨던 또는 설명하고 싶으신 부분

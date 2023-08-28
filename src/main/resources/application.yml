@@ -1,46 +1,36 @@
-#database:
-  #  params: useSSL=false&allowPublicKeyRetrieval=true&profileSQL=true&logger=Slf4JLogger
-  #  params: useUnicode=true&characterEncoding=utf8&useSSL=false&profileSQL=true&logger=Slf4JLogger
-
 spring:
   messages:
     basename: messages/error/message
   mvc:
     throw-exception-if-no-handler-found: true
-#  datasource:
-#    driver-class-name: org.h2.Driver
-#    #    driver-class-name: com.mysql.cj.jdbc.Driver
-#    hikari:
-#      jdbc-url: jdbc:h2:~/test
-#      username: sa
-#      password:
-#      data-source-properties:
-#        cachePrepStmts: true
-#        prepStmtCacheSize: 250
-#        prepStmtCacheSqlLimit: 2048
-#        useServerPrepStmts: true
-#        useLocalSessionState: true
-#        rewriteBatchedStatements: true
-#        cacheResultSetMetadata: true
-#        cacheServerConfiguration: true
-#        elideSetAutoCommits: true
-#        maintainTimeStats: false
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/Lecture
+    username: lecture
+    password: lecture
+    hikari:
+      data-source-properties:
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        useServerPrepStmts: true
+        useLocalSessionState: true
+        rewriteBatchedStatements: true
+        cacheResultSetMetadata: true
+        cacheServerConfiguration: true
+        elideSetAutoCommits: true
+        maintainTimeStats: false
   jpa:
     open-in-view: false
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         show_sql: true
         format_sql: true
         use_sql_comments: true
-        dialect: org.hibernate.dialect.H2Dialect
-  #        dialect: org.hibernate.dialect.MySQLDialect
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
+        dialect: org.hibernate.dialect.MySQLDialect
 
 springdoc:
   context-root: docs
