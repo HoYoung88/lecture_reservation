@@ -4,8 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.time.LocalDateTime;
-
 /**
  * Created by HoYoung on 2023/08/25.
  */
@@ -18,7 +16,7 @@ public class LectureDetailResponse {
     private final String speakerName;
     private final String venue;
     private final String content;
-    private final LocalDateTime lectureStartTime;
+    private final long lectureStartTime;
     private final int maxCapacity;
 
 }

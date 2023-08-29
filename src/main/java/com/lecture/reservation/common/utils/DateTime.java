@@ -1,5 +1,6 @@
 package com.lecture.reservation.common.utils;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -19,7 +20,7 @@ public class DateTime {
     }
 
     public static long toEpochMilli(LocalDateTime localDateTime) {
-        return toEpochMilli(localDateTime, ZoneId.systemDefault());
+        return toEpochMilli(localDateTime, ZONE_KOREA);
     }
 
     public static boolean isBetween(LocalDateTime compareDate, LocalDateTime compareStartDate,
@@ -33,5 +34,9 @@ public class DateTime {
 
     public static String format(LocalDateTime localDateTime, String format) {
         return localDateTime.format(DateTimeFormatter.ofPattern(format));
+    }
+
+    public static LocalDateTime convertMilliToLocalDateTime(long milliseconds) {
+        return Instant.ofEpochMilli(milliseconds).atZone(ZONE_KOREA).toLocalDateTime();
     }
 }

@@ -30,16 +30,27 @@ public class LectureController extends ControllerHelper {
     private final LectureApplicantService lectureApplicantService;
 
     @GetMapping(path = "")
-    @Operation(summary = "강연 목록")
+    @Operation(summary = "등록한 강연 목록 조회")
     public ResponseEntity<?> getLectures() {
+        return super.responseBody(this.lectureService.findAllLectures());
+    }
 
-        return super.responseBody(this.lectureService.findLectures());
+    @GetMapping(path = "/active")
+    @Operation(summary = "신청 가능한 강연 목록 조회")
+    public ResponseEntity<?> getActiveLectureApplications() {
+        return super.responseBody(this.lectureService.findAllActiveLecture());
     }
 
     @GetMapping(path = "/{lectureId}")
-    @Operation(summary = "강연 상세")
+    @Operation(summary = "강연 상세 조회")
     public ResponseEntity<?> getLecture(@PathVariable Long lectureId) {
         return super.responseBody(this.lectureService.findByLectureId(lectureId));
+    }
+
+    @GetMapping(path = "/populars")
+    @Operation(summary = "인기 강연 목록 조회")
+    public ResponseEntity<?> getLecturePopulars() {
+        return super.responseBody(this.lectureService.findPopularLecturesForLast3Days());
     }
 
     @PostMapping(path = "")
@@ -62,12 +73,14 @@ public class LectureController extends ControllerHelper {
     public ResponseEntity<?> getLecturesApplicants(@PathVariable Long lectureId) {
         return super.responseBody(this.lectureService.findByLectureId(lectureId));
     }
+
     @DeleteMapping(path = "/{lectureId}/applicants/{employeeNumber}")
     @Operation(summary = "신청한 강연 취소")
     public ResponseEntity<?> deleteLectureApplicant(@PathVariable Long lectureId, @PathVariable String employeeNumber) {
         this.lectureApplicantService.removeLectureApplicant(lectureId, employeeNumber);
         return super.responseBody("");
     }
+
     @GetMapping(path = "/applicants/{employeeNumber}")
     @Operation(summary = "강연 신청내역 조회")
     public ResponseEntity<?> getLectureApplicant(@PathVariable String employeeNumber) {

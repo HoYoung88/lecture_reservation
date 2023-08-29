@@ -32,10 +32,16 @@ public class LectureService {
     private final LectureApplicantMapper lectureApplicantMapper;
 
     @Transactional(readOnly = true)
-    public List<LectureDetailResponse> findLectures() {
-        List<Lecture> lectures = this.lectureRepository.findAllLectrues();
+    public List<LectureDetailResponse> findAllLectures() {
+        List<Lecture> lectures = this.lectureRepository.findAll();
         return this.lectureMapper.toDetailDtos(lectures);
     }
+
+    public List<LectureDetailResponse> findAllActiveLecture() {
+        List<Lecture> lectures = this.lectureRepository.findAllActiveLecture();
+        return this.lectureMapper.toDetailDtos(lectures);
+    }
+
 
     @Transactional(readOnly = true)
     public LectureDetailResponse findByLectureId(Long lectureId) {
@@ -66,6 +72,12 @@ public class LectureService {
 
         return this.lectureApplicantMapper.toDto(lectureApplicant);
 
+    }
+
+    @Transactional(readOnly = true)
+    public List<LectureDetailResponse> findPopularLecturesForLast3Days() {
+        List<Lecture> popularLectures = this.lectureRepository.findPopularLecturesForLast3Days();
+        return this.lectureMapper.toDetailDtos(popularLectures);
     }
 
     private void validateDuplicateApplicant(Lecture lecture, LectureApplicantRequest lectureApplicantRequest) {

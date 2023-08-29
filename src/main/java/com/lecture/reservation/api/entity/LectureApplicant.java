@@ -1,5 +1,6 @@
 package com.lecture.reservation.api.entity;
 
+import com.lecture.reservation.common.utils.DateTime;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 /**
  * Created by HoYoung on 2023/08/25.
  */
-@Table(name = "lecture_applicants")
+@Table(name = "lecture_applicant")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -46,5 +47,9 @@ public class LectureApplicant {
 
     public void setLecture(Lecture lecture) {
         this.lecture = lecture;
+    }
+
+    public long getApplicationDateTime() {
+        return DateTime.toEpochMilli(this.applicationDateTime);
     }
 }

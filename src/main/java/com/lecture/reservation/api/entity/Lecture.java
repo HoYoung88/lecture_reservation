@@ -1,5 +1,6 @@
 package com.lecture.reservation.api.entity;
 
+import com.lecture.reservation.common.utils.DateTime;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -43,7 +44,7 @@ public class Lecture {
     @Comment("강연 시작 시간")
     private LocalDateTime lectureStartTime;
 
-    @Comment("최대인원수")
+    @Comment("최대 수용 가능한 인원 수")
     private int maxCapacity;
 
     @OneToMany(mappedBy = "lecture", cascade = CascadeType.ALL)
@@ -65,5 +66,9 @@ public class Lecture {
 
     public Set<LectureApplicant> getApplicants() {
         return Collections.unmodifiableSet(applicants);
+    }
+
+    public long getLectureStartTime() {
+        return DateTime.toEpochMilli(this.lectureStartTime);
     }
 }

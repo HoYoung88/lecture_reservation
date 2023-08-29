@@ -58,9 +58,10 @@ public class LectureReservationServiceExceptionHandler extends ResponseEntityExc
     }
 
     @Override
-    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
-            HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatusCode status,
-            WebRequest request) {
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
+                                                                         HttpHeaders headers,
+                                                                         HttpStatusCode status,
+                                                                         WebRequest request) {
 
         ApiResultResponse<Void> apiResultResponse = this.createApiResultResponse(
                 GlobalErrorCode.METHOD_NOT_SUPPORTED, ex.getMessage());
@@ -79,9 +80,10 @@ public class LectureReservationServiceExceptionHandler extends ResponseEntityExc
     }
 
     @Override
-    protected ResponseEntity<Object> handleMissingServletRequestParameter(
-            MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatusCode status,
-            WebRequest request) {
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,
+                                                                          HttpHeaders headers,
+                                                                          HttpStatusCode status,
+                                                                          WebRequest request) {
 
         ApiResultResponse<Void> apiResultResponse = this.createApiResultResponse(
                 GlobalErrorCode.MISSING_SERVLET_REQUEST_PARAMETER, ex.getMessage());
@@ -89,9 +91,10 @@ public class LectureReservationServiceExceptionHandler extends ResponseEntityExc
     }
 
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotWritable(
-            HttpMessageNotWritableException ex, HttpHeaders headers, HttpStatusCode status,
-            WebRequest request) {
+    protected ResponseEntity<Object> handleHttpMessageNotWritable(HttpMessageNotWritableException ex,
+                                                                  HttpHeaders headers,
+                                                                  HttpStatusCode status,
+                                                                  WebRequest request) {
 
         return this.handleExceptionInternal(ex, null, headers, status, request);
     }

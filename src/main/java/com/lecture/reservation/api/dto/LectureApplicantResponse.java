@@ -17,4 +17,5 @@ import lombok.ToString;
 public class LectureApplicantResponse {
     private Long id;
     private String employeeNumber;
+    private long applicationDateTime;
 }

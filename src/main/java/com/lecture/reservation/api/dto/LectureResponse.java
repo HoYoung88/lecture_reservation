@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -19,7 +18,7 @@ public class LectureResponse {
     private final String speakerName;
     private final String venue;
     private final String content;
-    private final LocalDateTime lectureTime;
+    private final long lectureStartTime;
     private final int maxCapacity;
 
     private final List<LectureApplicantResponse> applicants;
