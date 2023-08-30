@@ -1,19 +1,11 @@
 package com.lecture.reservation.api.service;
 
-import com.lecture.reservation.api.dto.LectureApplicantRequest;
-import com.lecture.reservation.api.dto.LectureApplicantResponse;
-import com.lecture.reservation.api.dto.LectureDetailResponse;
-import com.lecture.reservation.api.dto.LectureRequest;
-import com.lecture.reservation.api.dto.LectureResponse;
 import com.lecture.reservation.api.entity.Lecture;
 import com.lecture.reservation.api.entity.LectureApplicant;
 import com.lecture.reservation.api.exception.LectureErrorCode;
-import com.lecture.reservation.api.mapper.LectureApplicantMapper;
-import com.lecture.reservation.api.mapper.LectureMapper;
 import com.lecture.reservation.api.repository.LectureRepository;
 import com.lecture.reservation.common.exception.LectureReservationServiceException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,71 +16,97 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class LectureService {
 
     private final LectureRepository lectureRepository;
-    private final LectureMapper lectureMapper;
-    private final LectureApplicantMapper lectureApplicantMapper;
 
+    /**
+     * 등록한 강연 전체 리스트
+     */
     @Transactional(readOnly = true)
-    public List<LectureDetailResponse> findAllLectures() {
-        List<Lecture> lectures = this.lectureRepository.findAll();
-        return this.lectureMapper.toDetailDtos(lectures);
+    public List<Lecture> findAllLectures() {
+        return this.lectureRepository.findAll();
     }
 
-    public List<LectureDetailResponse> findAllActiveLecture() {
-        List<Lecture> lectures = this.lectureRepository.findAllActiveLecture();
-        return this.lectureMapper.toDetailDtos(lectures);
-    }
-
-
+    /**
+     * 신청가능한 강연 리스트
+     */
     @Transactional(readOnly = true)
-    public LectureDetailResponse findByLectureId(Long lectureId) {
-        Lecture lecture = this.lectureRepository.findAllByLectureAndApplicants(lectureId)
-                .orElseThrow(() -> new LectureReservationServiceException(LectureErrorCode.LECTURE_NOT_FOUND));
-        return this.lectureMapper.toDetailDto(lecture);
+    public List<Lecture> findAllActiveLecture() {
+        return this.lectureRepository.findAllActiveLecture();
     }
 
-    @Transactional
-    public LectureResponse saveLecture(LectureRequest lectureRequest) {
-        Lecture lecture = this.lectureMapper.toEntity(lectureRequest);
-        Lecture saveLecture = this.lectureRepository.save(lecture);
-        return this.lectureMapper.toDto(saveLecture);
+    /**
+     * 강연 상세 정보 조회
+     *
+     * @param lectureId 상세 정보를 조회할 강연 아이디
+     */
+    @Transactional(readOnly = true)
+    public Lecture findByLectureId(Long lectureId) {
+        return this.lectureRepository.findAllByLectureAndApplicants(lectureId)
+                .orElseThrow(() -> new LectureReservationServiceException(LectureErrorCode.LECTURE_NOT_FOUND));
     }
 
+    /**
+     * 강연 정보를 저장
+     *
+     * @param lecture 등록할 강연 정보
+     */
     @Transactional
-    public LectureApplicantResponse saveLectureApplicant(Long lectureId, LectureApplicantRequest lectureApplicantRequest) {
-        Lecture lecture = this.lectureRepository.findById(lectureId)
-                .orElseThrow(() -> new LectureReservationServiceException(LectureErrorCode.LECTURE_NOT_FOUND));
+    public Lecture saveLecture(Lecture lecture) {
+        return this.lectureRepository.save(lecture);
+    }
 
-        validateDuplicateApplicant(lecture, lectureApplicantRequest);
+    /**
+     * 강연 신청자 정보를 저장
+     *
+     * @param lectureId        등록할 강연 아이디
+     * @param lectureApplicant 저장할 신청자 entity
+     */
+    @Transactional
+    public LectureApplicant saveLectureApplicant(Long lectureId, LectureApplicant lectureApplicant) {
 
-        LectureApplicant lectureApplicant = this.lectureApplicantMapper.toEntity(lectureApplicantRequest);
+        Lecture lecture = this.findByLectureId(lectureId);
+
+        validateDuplicateApplicant(lecture, lectureApplicant);
+
         lecture.addApplicant(lectureApplicant);
         this.lectureRepository.save(lecture);
 
         validateLectureCapacity(lecture);
 
-        return this.lectureApplicantMapper.toDto(lectureApplicant);
+        return lectureApplicant;
 
     }
 
+    /**
+     * 인기 강연 목록 조회
+     */
     @Transactional(readOnly = true)
-    public List<LectureDetailResponse> findPopularLecturesForLast3Days() {
-        List<Lecture> popularLectures = this.lectureRepository.findPopularLecturesForLast3Days();
-        return this.lectureMapper.toDetailDtos(popularLectures);
+    public List<Lecture> findPopularLecturesForLast3Days() {
+        return this.lectureRepository.findPopularLecturesForLast3Days();
     }
 
-    private void validateDuplicateApplicant(Lecture lecture, LectureApplicantRequest lectureApplicantRequest) {
+    /**
+     * 강연 등록 중복 체크 벨리데이션
+     *
+     * @param lecture          강연 entity
+     * @param lectureApplicant 강연 신청 entity
+     */
+    private void validateDuplicateApplicant(Lecture lecture, LectureApplicant lectureApplicant) {
         boolean isDuplicate = lecture.getApplicants().stream()
-                .anyMatch(applicant -> applicant.getEmployeeNumber().equals(lectureApplicantRequest.getEmployeeNumber()));
+                .anyMatch(applicant -> applicant.getEmployeeNumber().equals(lectureApplicant.getEmployeeNumber()));
 
         if (isDuplicate) {
             throw new LectureReservationServiceException(LectureErrorCode.LECTURE_DUPLICATE_RESERVATION);
         }
     }
 
+    /**
+     * 강연 최대 수용 가능한 인원 수 벨리데이션
+     *
+     * @param lecture 강연 entity
+     */
     private void validateLectureCapacity(Lecture lecture) {
         int lectureMaxCapacity = lecture.getMaxCapacity();
 

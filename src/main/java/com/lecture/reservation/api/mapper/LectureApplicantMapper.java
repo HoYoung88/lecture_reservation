@@ -11,5 +11,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface LectureApplicantMapper {
     LectureApplicant toEntity(LectureApplicantRequest lectureApplicantRequest);
+
     LectureApplicantResponse toDto(LectureApplicant lectureApplicant);
 }

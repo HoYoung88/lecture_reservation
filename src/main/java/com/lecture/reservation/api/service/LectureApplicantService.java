@@ -1,9 +1,7 @@
 package com.lecture.reservation.api.service;
 
-import com.lecture.reservation.api.dto.LectureDetailResponse;
 import com.lecture.reservation.api.entity.Lecture;
 import com.lecture.reservation.api.entity.LectureApplicant;
-import com.lecture.reservation.api.mapper.LectureMapper;
 import com.lecture.reservation.api.repository.LectureApplicantRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,18 +16,26 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class LectureApplicantService {
     private final LectureApplicantRepository lectureApplicantRepository;
-    private final LectureMapper lectureMapper;
 
-    @Transactional
-    public List<LectureDetailResponse> findByEmployeeNumber(String employeeNumber) {
+    /**
+     * 사원 번호로 강의 정보를 조회
+     *
+     * @param employeeNumber 사원 번호
+     */
+    @Transactional(readOnly = true)
+    public List<Lecture> findByEmployeeNumber(String employeeNumber) {
         List<LectureApplicant> lectureApplicants = this.lectureApplicantRepository.findByEmployeeNumber(employeeNumber);
-        List<Lecture> lectures = lectureApplicants.stream().map(LectureApplicant::getLecture).collect(Collectors.toList());
-        return this.lectureMapper.toDetailDtos(lectures);
+        return lectureApplicants.stream().map(LectureApplicant::getLecture).collect(Collectors.toList());
     }
 
+    /**
+     * 등록한 강의 신청 취소
+     *
+     * @param lectureId      강의 아이디
+     * @param employeeNumber 사원 번호
+     */
     @Transactional
     public void removeLectureApplicant(Long lectureId, String employeeNumber) {
         this.lectureApplicantRepository.removeByEmployeeNumberAndLectureId(lectureId, employeeNumber);

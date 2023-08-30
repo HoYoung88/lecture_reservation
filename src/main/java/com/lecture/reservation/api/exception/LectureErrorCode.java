@@ -8,5 +8,5 @@ import com.lecture.reservation.common.error.ErrorCode;
 public enum LectureErrorCode implements ErrorCode {
     LECTURE_NOT_FOUND,
     LECTURE_DUPLICATE_RESERVATION,
-    LECTURE_APPLICANT_MAX_CAPACITY;
+    LECTURE_APPLICANT_MAX_CAPACITY
 }

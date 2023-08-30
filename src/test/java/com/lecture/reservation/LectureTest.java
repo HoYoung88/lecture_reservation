@@ -1,11 +1,13 @@
 package com.lecture.reservation;
 
 import com.lecture.reservation.api.dto.LectureApplicantRequest;
-import com.lecture.reservation.api.dto.LectureApplicantResponse;
-import com.lecture.reservation.api.dto.LectureDetailResponse;
 import com.lecture.reservation.api.dto.LectureRequest;
 import com.lecture.reservation.api.dto.LectureResponse;
+import com.lecture.reservation.api.entity.Lecture;
+import com.lecture.reservation.api.entity.LectureApplicant;
 import com.lecture.reservation.api.exception.LectureErrorCode;
+import com.lecture.reservation.api.mapper.LectureApplicantMapper;
+import com.lecture.reservation.api.mapper.LectureMapper;
 import com.lecture.reservation.api.service.LectureApplicantService;
 import com.lecture.reservation.api.service.LectureService;
 import com.lecture.reservation.common.exception.LectureReservationServiceException;
@@ -29,9 +31,12 @@ public class LectureTest {
 
     @Autowired
     private LectureService lectureService;
-
     @Autowired
     private LectureApplicantService lectureApplicantService;
+    @Autowired
+    private LectureMapper lectureMapper;
+    @Autowired
+    private LectureApplicantMapper lectureApplicantMapper;
 
     @Test
     @DisplayName("강연 등록")
@@ -44,7 +49,8 @@ public class LectureTest {
                 .maxCapacity(10) //신청 가능 인원
                 .build();
 
-        LectureResponse lectureResponse = this.lectureService.saveLecture(lectureRequest);
+        Lecture request = this.lectureMapper.toEntity(lectureRequest);
+        LectureResponse lectureResponse = this.lectureMapper.toDto(this.lectureService.saveLecture(request));
 
         Assertions.assertThat(lectureResponse.getSpeakerName()).isEqualTo(lectureRequest.getSpeakerName());
         Assertions.assertThat(lectureResponse.getMaxCapacity()).isEqualTo(lectureRequest.getMaxCapacity());
@@ -58,10 +64,11 @@ public class LectureTest {
         LectureApplicantRequest lectureApplicantRequest = LectureApplicantRequest.builder()
                 .employeeNumber("230829")
                 .build();
+        LectureApplicant request = this.lectureApplicantMapper.toEntity(lectureApplicantRequest);
 
-        LectureApplicantResponse lectureApplicantResponse = this.lectureService.saveLectureApplicant(lectureId, lectureApplicantRequest);
+        LectureApplicant saveLectureApplicant  = this.lectureService.saveLectureApplicant(lectureId, request);
 
-        Assertions.assertThat(lectureApplicantResponse.getEmployeeNumber()).isEqualTo(lectureApplicantRequest.getEmployeeNumber());
+        Assertions.assertThat(saveLectureApplicant.getEmployeeNumber()).isEqualTo(lectureApplicantRequest.getEmployeeNumber());
 
     }
 
@@ -72,13 +79,13 @@ public class LectureTest {
         LectureApplicantRequest lectureApplicantRequest = LectureApplicantRequest.builder()
                 .employeeNumber("230829")
                 .build();
+        LectureApplicant request = this.lectureApplicantMapper.toEntity(lectureApplicantRequest);
 
         ThrowableAssertAlternative<LectureReservationServiceException> thrownBy = Assertions.assertThatExceptionOfType(LectureReservationServiceException.class)
                 .isThrownBy(() -> {
-                    this.lectureService.saveLectureApplicant(lectureId, lectureApplicantRequest);
+                    this.lectureService.saveLectureApplicant(lectureId, request);
                 });
 
-        //then
         thrownBy.extracting(LectureReservationServiceException::getErrorCode)
                 .isEqualTo(LectureErrorCode.LECTURE_DUPLICATE_RESERVATION);
     }
@@ -88,7 +95,7 @@ public class LectureTest {
     public void testGetFindLectureByEmployeeNumber() {
         String employeeNumber = "230829";
 
-        List<LectureDetailResponse> lectures = this.lectureApplicantService.findByEmployeeNumber(employeeNumber);
+        List<Lecture> lectures = this.lectureApplicantService.findByEmployeeNumber(employeeNumber);
 
         Assertions.assertThat(lectures.size()).isGreaterThan(-1);
     }
@@ -100,7 +107,7 @@ public class LectureTest {
         String employeeNumber = "230829";
 
         this.lectureApplicantService.removeLectureApplicant(lectureId, employeeNumber);
-        List<LectureDetailResponse> lectures = this.lectureApplicantService.findByEmployeeNumber(employeeNumber);
+        List<Lecture> lectures = this.lectureApplicantService.findByEmployeeNumber(employeeNumber);
         long count = lectures.stream().filter(lecture -> lecture.getId().equals(lectureId)).count();
 
         Assertions.assertThat(count).isEqualTo(0);
@@ -109,7 +116,7 @@ public class LectureTest {
     @Test
     @DisplayName("인기 강연 목록 조회")
     public void testGetLecturePopulars() {
-        LectureResponse lectureResponse = this.lectureService.saveLecture(LectureRequest.builder()
+        Lecture saveLecture = this.lectureService.saveLecture(Lecture.builder()
                 .speakerName("홍길동")
                 .venue("강서")
                 .content("테스트 강연")
@@ -117,14 +124,14 @@ public class LectureTest {
                 .maxCapacity(5)
                 .build());
 
-        this.lectureService.saveLectureApplicant(lectureResponse.getId(), LectureApplicantRequest.builder()
+        this.lectureService.saveLectureApplicant(saveLecture.getId(), this.lectureApplicantMapper.toEntity(LectureApplicantRequest.builder()
                 .employeeNumber("230829")
-                .build());
-        this.lectureService.saveLectureApplicant(lectureResponse.getId(), LectureApplicantRequest.builder()
+                .build()));
+        this.lectureService.saveLectureApplicant(saveLecture.getId(), this.lectureApplicantMapper.toEntity(LectureApplicantRequest.builder()
                 .employeeNumber("230830")
-                .build());
+                .build()));
 
-        lectureResponse = this.lectureService.saveLecture(LectureRequest.builder()
+        saveLecture = this.lectureService.saveLecture(Lecture.builder()
                 .speakerName("김철수")
                 .venue("강서")
                 .content("테스트 강연")
@@ -132,19 +139,21 @@ public class LectureTest {
                 .maxCapacity(5)
                 .build());
 
-        this.lectureService.saveLectureApplicant(lectureResponse.getId(), LectureApplicantRequest.builder()
+        this.lectureService.saveLectureApplicant(saveLecture.getId(), this.lectureApplicantMapper.toEntity(LectureApplicantRequest.builder()
                 .employeeNumber("230829")
-                .build());
-        this.lectureService.saveLectureApplicant(lectureResponse.getId(), LectureApplicantRequest.builder()
+                .build()));
+        this.lectureService.saveLectureApplicant(saveLecture.getId(), this.lectureApplicantMapper.toEntity(LectureApplicantRequest.builder()
                 .employeeNumber("230830")
-                .build());
-        this.lectureService.saveLectureApplicant(lectureResponse.getId(), LectureApplicantRequest.builder()
+                .build()));
+        this.lectureService.saveLectureApplicant(saveLecture.getId(), this.lectureApplicantMapper.toEntity(LectureApplicantRequest.builder()
                 .employeeNumber("230831")
-                .build());
+                .build()));
 
-        List<LectureDetailResponse> lectures = this.lectureService.findPopularLecturesForLast3Days();
+        List<Lecture> lectures = this.lectureService.findPopularLecturesForLast3Days();
         Assertions.assertThat(lectures.get(0).getSpeakerName()).isEqualTo("김철수");
 
     }
+
+
 
 }

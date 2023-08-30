@@ -16,8 +16,10 @@ public interface LectureMapper {
     Lecture toEntity(LectureRequest lectureRequest);
 
     LectureResponse toDto(Lecture lecture);
+
     LectureDetailResponse toDetailDto(Lecture lecture);
 
     List<LectureResponse> toDto(List<Lecture> lectures);
+
     List<LectureDetailResponse> toDetailDtos(List<Lecture> lectures);
 }

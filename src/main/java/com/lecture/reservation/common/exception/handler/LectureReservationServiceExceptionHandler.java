@@ -4,7 +4,6 @@ import com.lecture.reservation.common.dto.ApiResultResponse;
 import com.lecture.reservation.common.error.ErrorCode;
 import com.lecture.reservation.common.error.GlobalErrorCode;
 import com.lecture.reservation.common.exception.LectureReservationServiceException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -26,7 +25,6 @@ import java.util.Objects;
  * Created by HoYoung on 2023/03/07.
  */
 @RestControllerAdvice
-@Slf4j
 public class LectureReservationServiceExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = LectureReservationServiceException.class)

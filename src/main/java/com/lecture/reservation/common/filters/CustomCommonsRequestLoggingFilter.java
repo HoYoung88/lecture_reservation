@@ -34,7 +34,7 @@ public class CustomCommonsRequestLoggingFilter extends CommonsRequestLoggingFilt
     protected boolean shouldLog(HttpServletRequest request) {
         this.sw = new StopWatch();
         return !(new AntPathMatcher().match("/" + springdocContextRoot + "/**",
-                                            request.getRequestURI()));
+                request.getRequestURI()));
     }
 
     @Override

@@ -1,7 +1,12 @@
 package com.lecture.reservation.api.controller;
 
 import com.lecture.reservation.api.dto.LectureApplicantRequest;
+import com.lecture.reservation.api.dto.LectureDetailResponse;
 import com.lecture.reservation.api.dto.LectureRequest;
+import com.lecture.reservation.api.entity.Lecture;
+import com.lecture.reservation.api.entity.LectureApplicant;
+import com.lecture.reservation.api.mapper.LectureApplicantMapper;
+import com.lecture.reservation.api.mapper.LectureMapper;
 import com.lecture.reservation.api.service.LectureApplicantService;
 import com.lecture.reservation.api.service.LectureService;
 import com.lecture.reservation.common.helper.ControllerHelper;
@@ -17,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * Created by HoYoung on 2023/08/25.
  */
@@ -26,37 +33,41 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "강연")
 public class LectureController extends ControllerHelper {
 
+    private final LectureMapper lectureMapper;
+    private final LectureApplicantMapper lectureApplicantMapper;
     private final LectureService lectureService;
     private final LectureApplicantService lectureApplicantService;
 
     @GetMapping(path = "")
     @Operation(summary = "등록한 강연 목록 조회")
     public ResponseEntity<?> getLectures() {
-        return super.responseBody(this.lectureService.findAllLectures());
+        return super.responseBody(this.lectureMapper.toDetailDtos(this.lectureService.findAllLectures()));
     }
 
     @GetMapping(path = "/active")
     @Operation(summary = "신청 가능한 강연 목록 조회")
     public ResponseEntity<?> getActiveLectureApplications() {
-        return super.responseBody(this.lectureService.findAllActiveLecture());
+        return super.responseBody(this.lectureMapper.toDetailDtos(this.lectureService.findAllActiveLecture()));
     }
 
     @GetMapping(path = "/{lectureId}")
     @Operation(summary = "강연 상세 조회")
     public ResponseEntity<?> getLecture(@PathVariable Long lectureId) {
-        return super.responseBody(this.lectureService.findByLectureId(lectureId));
+        return super.responseBody(this.lectureMapper.toDetailDto(this.lectureService.findByLectureId(lectureId)));
     }
 
     @GetMapping(path = "/populars")
     @Operation(summary = "인기 강연 목록 조회")
     public ResponseEntity<?> getLecturePopulars() {
-        return super.responseBody(this.lectureService.findPopularLecturesForLast3Days());
+        List<LectureDetailResponse> responses = this.lectureMapper.toDetailDtos(this.lectureService.findPopularLecturesForLast3Days());
+        return super.responseBody(responses);
     }
 
     @PostMapping(path = "")
     @Operation(summary = "강연 등록")
     public ResponseEntity<?> postLectures(@RequestBody LectureRequest lectureRequest) {
-        this.lectureService.saveLecture(lectureRequest);
+        Lecture request = this.lectureMapper.toEntity(lectureRequest);
+        this.lectureService.saveLecture(request);
         return super.responseBody("");
     }
 
@@ -64,7 +75,8 @@ public class LectureController extends ControllerHelper {
     @Operation(summary = "강연 신청")
     public ResponseEntity<?> postLecturesApplicant(@PathVariable Long lectureId,
                                                    @RequestBody LectureApplicantRequest lectureApplicantRequest) {
-        this.lectureService.saveLectureApplicant(lectureId, lectureApplicantRequest);
+        LectureApplicant request = this.lectureApplicantMapper.toEntity(lectureApplicantRequest);
+        this.lectureService.saveLectureApplicant(lectureId, request);
         return super.responseBody("");
     }
 
@@ -84,7 +96,8 @@ public class LectureController extends ControllerHelper {
     @GetMapping(path = "/applicants/{employeeNumber}")
     @Operation(summary = "강연 신청내역 조회")
     public ResponseEntity<?> getLectureApplicant(@PathVariable String employeeNumber) {
-        return super.responseBody(this.lectureApplicantService.findByEmployeeNumber(employeeNumber));
+        List<LectureDetailResponse> responses = this.lectureMapper.toDetailDtos(this.lectureApplicantService.findByEmployeeNumber(employeeNumber));
+        return super.responseBody(responses);
     }
 
 
