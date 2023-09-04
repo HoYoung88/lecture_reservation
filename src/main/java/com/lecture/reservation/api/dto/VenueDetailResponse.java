@@ -7,25 +7,16 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * Created by HoYoung on 2023/08/25.
+ * Created by HoYoung on 2023/08/31.
  */
-
+//@Builder
 @Getter
-@Builder
 @ToString
-@Schema(description = "강연 상세")
-public class LectureDetailResponse {
+@Builder
+@Schema(description = "강연장 상세 Response")
+public class VenueDetailResponse {
     @Schema(accessMode = AccessMode.READ_ONLY)
-    private final Long id;
-
-    @Schema(description = "강연자")
-    private final String speakerName;
-
-    @Schema(description = "강연 내용")
-    private final String content;
-
-    @Schema(description = "강연 시작 시간")
-    private final long lectureStartTime;
+    private final long id;
 
     @Schema(description = "강연장 이름")
     private final String venueName;

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration name="demo-config" status="INFO" monitorInterval="1">
+  <Properties>
+<!--    <Property name="CONSOLE_LOG_PATTERN">-->
+<!--      %style{%d{yyyy-MM-dd HH:mm:ss.SSS}{GMT+9} %highlight{${LOG_LEVEL_PATTERN:-%5p}}{FATAL=red, ERROR=red, WARN=yellow, INFO=white, DEBUG=green, TRACE=green} %style{${sys:PID}}{magenta} [%T] -&#45;&#45; [%15.15t] %style{%-40.40c{1.}}{cyan} : %highlight{%m}{FATAL=red, ERROR=red, WARN=yellow, INFO=white, DEBUG=green, TRACE=green}%n%ex}{Normal}-->
+<!--    </Property>-->
+    <Property name="CONSOLE_LOG_PATTERN">
+      %style{%d{yyyy-MM-dd HH:mm:ss.SSS}{GMT+9} %highlight{${LOG_LEVEL_PATTERN:-%5p}}{FATAL=red, ERROR=red, WARN=yellow, INFO=white, DEBUG=green, TRACE=green} [%T] --- [%15.15t] %style{%-40.40c{1.}}{cyan} : %highlight{%m}{FATAL=red, ERROR=red, WARN=yellow, INFO=white, DEBUG=green, TRACE=green}%n}{Normal}
+    </Property>
+  </Properties>
+
+  <Appenders>
+    <Console name="DEMO_APPENDER" target="SYSTEM_OUT">
+      <PatternLayout pattern="${CONSOLE_LOG_PATTERN}"/>
+    </Console>
+  </Appenders>
+
+  <Loggers>
+    <logger name="com.lecture.reservation" level="DEBUG" additivity="false">
+      <AppenderRef ref="DEMO_APPENDER"/>
+    </logger>
+
+<!--    <logger name="org.springframework" level="INFO" additivity="false">-->
+<!--      <AppenderRef ref="DEMO_APPENDER"/>-->
+<!--    </logger>-->
+
+<!--    <logger name="org.springframework.web.filter" level="debug" additivity="false">-->
+<!--      <AppenderRef ref="DEMO_APPENDER"/>-->
+<!--    </logger>-->
+
+<!--    <logger name="MySQL" level="off" additivity="false">-->
+<!--      <AppenderRef ref="DEMO_APPENDER"/>-->
+<!--    </logger>-->
+
+<!--    <logger name="org.hibernate" level="INFO" additivity="false">-->
+<!--      <AppenderRef ref="DEMO_APPENDER"/>-->
+<!--    </logger>-->
+
+<!--    <logger name="com.zaxxer.hikari.HikariConfig" level="DEBUG" additivity="false">-->
+<!--      <AppenderRef ref="DEMO_APPENDER"/>-->
+<!--    </logger>-->
+
+<!--    <logger name="REQUEST-LOG" level="INFO" additivity="false">-->
+<!--      <AppenderRef ref="DEMO_APPENDER"/>-->
+<!--    </logger>-->
+
+<!--    <logger name="org.hibernate.orm.jdbc.bind" level="trace" />-->
+
+    <Root level="ERROR">
+      <AppenderRef ref="DEMO_APPENDER"/>
+    </Root>
+  </Loggers>
+</configuration>

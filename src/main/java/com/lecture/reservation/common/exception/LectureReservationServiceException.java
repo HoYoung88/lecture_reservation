@@ -13,7 +13,7 @@ public class LectureReservationServiceException extends ResponseStatusException 
     private final ErrorCode errorCode;
 
     public LectureReservationServiceException(ErrorCode errorCode) {
-        super(HttpStatus.BAD_REQUEST);
+        super(HttpStatus.BAD_REQUEST, errorCode.name());
         this.errorCode = errorCode;
     }
 

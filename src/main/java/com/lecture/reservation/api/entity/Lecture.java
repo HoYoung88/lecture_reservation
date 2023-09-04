@@ -3,9 +3,12 @@ package com.lecture.reservation.api.entity;
 import com.lecture.reservation.common.utils.DateTime;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -35,28 +38,28 @@ public class Lecture {
     @Comment("강연자")
     private String speakerName;
 
-    @Comment("강연장")
-    private String venue;
-
     @Comment("강연 내용")
     private String content;
 
     @Comment("강연 시작 시간")
     private LocalDateTime lectureStartTime;
 
-    @Comment("최대 수용 가능한 인원 수")
-    private int maxCapacity;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "venue_id")
+    private Venue venue;
 
     @OneToMany(mappedBy = "lecture", cascade = CascadeType.ALL)
     private final Set<LectureApplicant> applicants = new HashSet<>();
 
     @Builder
-    public Lecture(String speakerName, String venue, String content, LocalDateTime lectureStartTime, int maxCapacity) {
+    public Lecture(String speakerName, String content, LocalDateTime lectureStartTime) {
         this.speakerName = speakerName;
-        this.venue = venue;
         this.content = content;
         this.lectureStartTime = lectureStartTime;
-        this.maxCapacity = maxCapacity;
+    }
+
+    public void setVenue(Venue venue) {
+        this.venue = venue;
     }
 
     public void addApplicant(LectureApplicant lectureApplicant) {

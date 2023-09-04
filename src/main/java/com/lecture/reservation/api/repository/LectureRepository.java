@@ -1,6 +1,8 @@
 package com.lecture.reservation.api.repository;
 
 import com.lecture.reservation.api.entity.Lecture;
+import com.lecture.reservation.api.exception.LectureErrorCode;
+import com.lecture.reservation.common.exception.LectureReservationServiceException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -30,4 +32,18 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
             " GROUP BY l.id" +
             " ORDER BY application_count DESC", nativeQuery = true)
     List<Lecture> findPopularLecturesForLast3Days();
+
+    @Query(value = "select l, v " +
+            " from Lecture l JOIN Venue v ON l.venue.id = v.id")
+    List<Lecture> findLectures();
+
+    @Query(value = "select l, v " +
+            " from Lecture l JOIN Venue v ON l.venue.id = v.id" +
+            " where l.id = :lectureId")
+    Optional<Lecture> findById(Long lectureId);
+
+    default Lecture findByIdOrThrow(long lectureId) {
+        return findById(lectureId)
+                .orElseThrow(() -> new LectureReservationServiceException(LectureErrorCode.LECTURE_NOT_FOUND));
+    }
 }

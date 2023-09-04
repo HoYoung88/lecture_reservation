@@ -6,7 +6,7 @@ package com.lecture.reservation.common.error;
 public interface ErrorCode {
     String name();
     default String getMessageKey() {
-        return this.getClass().getPackageName().concat(".").concat(this.name().toLowerCase());
+        return this.getClass().getPackageName() + "." + this.name().toLowerCase();
     }
 
 }

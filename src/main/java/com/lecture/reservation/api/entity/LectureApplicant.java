@@ -52,4 +52,6 @@ public class LectureApplicant {
     public long getApplicationDateTime() {
         return DateTime.toEpochMilli(this.applicationDateTime);
     }
+
+
 }

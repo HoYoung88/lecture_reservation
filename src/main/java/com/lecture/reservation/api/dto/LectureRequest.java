@@ -15,11 +15,12 @@ import java.time.LocalDateTime;
 @ToString
 @Schema
 public class LectureRequest {
+
+    @Schema(description = "강연 장소 아이디")
+    private final Long venueId;
+
     @Schema(description = "강연자")
     private final String speakerName;
-
-    @Schema(description = "강연장")
-    private final String venue;
 
     @Schema(description = "강연 내용")
     private final String content;
@@ -27,6 +28,4 @@ public class LectureRequest {
     @Schema(description = "강연 시작 시간")
     private final LocalDateTime lectureStartTime;
 
-    @Schema(description = "최대 수용 가능한 인원 수")
-    private final int maxCapacity;
 }
