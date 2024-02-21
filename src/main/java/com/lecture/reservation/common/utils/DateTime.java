@@ -4,12 +4,14 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.TimeZone;
 
 /**
  * Created by HoYoung on 2023/02/28.
  */
 public class DateTime {
-
+    
+    public static TimeZone DEFUALT_TIME_ZONE = TimeZone.getTimeZone("GMT+9:00")
     public static ZoneId ZONE_UTC = ZoneId.of("UTC");
     public static ZoneId ZONE_KOREA = ZoneId.of("Asia/Seoul");
     public static DateTimeFormatter DEFUALT_DATE_FROMAT = DateTimeFormatter.ofPattern(
@@ -25,7 +27,7 @@ public class DateTime {
 
     public static boolean isBetween(LocalDateTime compareDate, LocalDateTime compareStartDate,
             LocalDateTime compareEndDate) {
-        return !compareDate.isBefore(compareStartDate) && !compareDate.isAfter(compareEndDate);
+        return compareDate.isAfter(compareStartDate) && compareDate.isBefore(compareEndDate);
     }
 
     public static String format(LocalDateTime localDateTime) {
@@ -36,7 +38,7 @@ public class DateTime {
         return localDateTime.format(DateTimeFormatter.ofPattern(format));
     }
 
-    public static LocalDateTime convertMilliToLocalDateTime(long milliseconds) {
+    public static LocalDateTime toLocalDateTime(long milliseconds) {
         return Instant.ofEpochMilli(milliseconds).atZone(ZONE_KOREA).toLocalDateTime();
     }
 }
